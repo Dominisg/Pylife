@@ -4,6 +4,12 @@ from world.animals.turtle import Turtle
 from world.animals.fox import Fox
 from world.animals.wolf import Wolf
 from world.animals.antelope import Antelope
+from world.plants.dandelion import Dandelion
+from world.plants.deadlyshade import Deadlyshade
+from world.plants.grass import Grass
+from world.plants.guarana import Guarana
+from world.plants.hogweed import Hogweed
+
 
 import random
 
@@ -17,6 +23,7 @@ class World:
         self.__destroy_list = []
         self._dimensions = dim
         self.__boardinterface = None
+        self.__human = None
         self.__map = [[0 for x in range(dim.x)] for y in range(dim.y)]
         self.create_starting_board()
 
@@ -26,11 +33,16 @@ class World:
     def rand_dir(self):
         pass
 
+    def set_dir(self,dir):
+        if self.__human:
+            self.__human.set_dir(dir)
+
     def translate_cords(self, dir, cords):
         pass
 
-    def get_fieldsize(self):
-        pass
+
+    def set_human(self,human):
+        self._human=human
 
     def get_dim(self):
         return self._dimensions
@@ -52,14 +64,27 @@ class World:
         # self.create_organism(Sheep.__name__)
         # self.create_organism(Sheep.__name__)
         self.create_organism("Turtle")
+        self.create_organism("Turtle")
         self.create_organism("Fox")
         self.create_organism("Wolf")
+        self.create_organism("Wolf")
+        self.create_organism("Sheep")
         self.create_organism("Sheep")
         self.create_organism("Antelope")
+        self.create_organism("Antelope")
+        self.create_organism("Fox")
+        self.create_organism("Hogweed")
+        self.create_organism("Dandelion")
+        self.create_organism("Grass")
+        self.create_organism("Deadlyshade")
+        self.create_organism("Guarana")
+
+
 
     def perform_round(self):
         for organism in self.__organisms:
-            organism.action()
+            if self.check_if_alive(organism):
+                organism.action()
         self.destroy_organisms()
         self.add_created_organism()
 
@@ -101,7 +126,7 @@ class World:
                     self.__organisms.pop(i)
                     found = True
                     break
-            if found:
+            if not (found):
                 for i in range(0, len(self.__created_list)):
                     if self.__created_list[i] == self.__destroy_list[-1]:
                         self.__created_list.pop(i)

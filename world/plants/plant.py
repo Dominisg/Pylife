@@ -19,7 +19,7 @@ class Plant(Organism):
 
     def spread(self):
         if random.randrange(0, 100) + 1 <= 10:
-            if self._world.create_in_neighbourhood(self._cords,self.__name__):
+            if self._world.create_in_neighbourhood(self._cords,type(self).__name__):
                 #todo: comment spread
                 return True
         return False

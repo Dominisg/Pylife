@@ -1,4 +1,5 @@
 from gui.gamescreen import LifeApp
-from world.animals.sheep import Sheep
+from gui.gamescreen import MyKeyboardListener
+from kivy.base import runTouchApp
 
 LifeApp().run()
