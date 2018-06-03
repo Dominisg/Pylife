@@ -1,0 +1,76 @@
+<CustomButton@Button>:
+    font_size: 12
+    color: .88, 0.88, 0.88, 1,
+    size: 60,20
+
+<BoardToggle@ToggleButton>:
+    group: 'board'
+    size: 60,20
+
+<ScrollableLabel>:
+    Label:
+        size_hint_y: None
+        height: self.texture_size[1]
+        text_size: self.width, None
+        text: root.text
+
+
+<BoardInterface>:
+    name: "boardinterface"
+    Widget:
+        CustomButton:
+            text: "Save"
+            pos: 270, 145
+        CustomButton:
+            on_press:
+                root.perform_round()
+                root.clear()
+            text: "Next turn"
+            pos: 200, 145
+        CustomButton:
+            text: "Load"
+            pos: 340, 145
+        CustomButton:
+            text: "Skill"
+            pos: 270, 770
+        ScrollableLabel:
+            pos:0,10
+            size: 600,100
+            text: ""
+
+
+
+<Dialog>:
+    size:100,100
+    BoxLayout:
+        orientation: "vertical"
+        BoxLayout:
+            Label:
+                text: "World type :"
+            BoardToggle:
+                text: 'Grid'
+                group: 'board'
+                state: 'down'
+            BoardToggle:
+                id:hex
+                text: 'Hex'
+                group: 'board'
+        BoxLayout:
+            Label:
+                text: "Size(x,y) :"
+            NumberInput:
+                id:width
+                multiline: False
+            NumberInput:
+                id:height
+                multiline: False
+
+        CustomButton:
+            text: "Ok"
+            on_press:
+                root.manager.current = "boardinterface"
+                root.create_world(width.text, height.text, hex.state)
+
+
+
+
