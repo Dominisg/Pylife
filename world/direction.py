@@ -3,8 +3,8 @@ from enum import Enum
 
 
 class Direction(Enum):
-    RIGHT = (1, 0, 0, 0)
-    LEFT = (-1, 0, 0, 0)
+    RIGHT = (1, 0, 1, 0)
+    LEFT = (-1, 0, -1, 0)
     DOWN = (1, 1, 0, 1)
     UP = (0, -1, -1, -1)
     HEXRIGHT = (1, -1, 0, -1)
@@ -18,8 +18,11 @@ class Direction(Enum):
 
     def translate(self, point):
         if self == Direction.DOWN:
-            point.x += self.xe
-            point.y += self.ye
+            point.x += Direction.UP.xo
+            point.y += Direction.UP.yo
+        elif self == Direction.UP:
+            point.x += Direction.DOWN.xe
+            point.y += Direction.DOWN.ye
         else:
             point.x += self.xo
             point.y += self.yo

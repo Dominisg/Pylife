@@ -33,4 +33,14 @@ class WorldGrid(World):
             self.add_to_queue(type, tmp)
             return True
 
-        return False
+    def best_way_to(self,start,end):
+        if start.x != end.x:
+            if start.x>end.x:
+                return Direction.LEFT
+            else:
+                return Direction.RIGHT
+        if start.y != end.y:
+            if start.y>end.y:
+                return Direction.DOWN
+            else:
+                return Direction.UP

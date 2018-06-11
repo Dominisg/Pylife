@@ -32,7 +32,7 @@ class Antelope(Animal):
             self._world.set_on_board(self)
             self.action()
         else:
-            #todo: comment
+            self._world.get_commentator().comment_jumping(self, self._cords)
             if collision_target:
                 self.collision(collision_target,last_cords)
             if self._world.check_if_alive(self):

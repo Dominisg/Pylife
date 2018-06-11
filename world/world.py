@@ -4,45 +4,59 @@ from world.animals.turtle import Turtle
 from world.animals.fox import Fox
 from world.animals.wolf import Wolf
 from world.animals.antelope import Antelope
+from world.animals.human import Human
 from world.plants.dandelion import Dandelion
 from world.plants.deadlyshade import Deadlyshade
 from world.plants.grass import Grass
 from world.plants.guarana import Guarana
 from world.plants.hogweed import Hogweed
-
+from world.animals.cybersheep import Cybersheep
+from abc import ABC, abstractmethod
 
 import random
 
 
-class World:
+class World(ABC):
     screensize = Point(600, 800)
 
     def __init__(self, dim):
         self.__organisms = []
         self.__created_list = []
         self.__destroy_list = []
+        self.__commentator = 0
         self._dimensions = dim
         self.__boardinterface = None
         self.__human = None
-        self.__map = [[0 for x in range(dim.x)] for y in range(dim.y)]
+        self.__map = [[0 for y in range(dim.y)] for x in range(dim.x)]
         self.create_starting_board()
 
+    @abstractmethod
     def create_in_neighbourhood(self, point, type):
         pass
 
+    @abstractmethod
     def rand_dir(self):
         pass
 
-    def set_dir(self,dir):
+    def set_dir(self, dir):
         if self.__human:
             self.__human.set_dir(dir)
+
+    def set_commentator(self, com):
+        self.__commentator = com
+
+    def get_commentator(self):
+        return self.__commentator
 
     def translate_cords(self, dir, cords):
         pass
 
+    def activate_skill(self):
+        if self.__human:
+            self.__human.activate_skill()
 
-    def set_human(self,human):
-        self._human=human
+    def set_human(self, human):
+        self.__human = human
 
     def get_dim(self):
         return self._dimensions
@@ -60,11 +74,10 @@ class World:
         return self.__boardinterface
 
     def create_starting_board(self):
-        # self.create_organism(Sheep.__name__)
-        # self.create_organism(Sheep.__name__)
-        # self.create_organism(Sheep.__name__)
+        pass
         self.create_organism("Turtle")
         self.create_organism("Turtle")
+        self.create_organism("Human")
         self.create_organism("Fox")
         self.create_organism("Wolf")
         self.create_organism("Wolf")
@@ -78,8 +91,7 @@ class World:
         self.create_organism("Grass")
         self.create_organism("Deadlyshade")
         self.create_organism("Guarana")
-
-
+        self.create_organism("Cybersheep")
 
     def perform_round(self):
         for organism in self.__organisms:
@@ -90,7 +102,7 @@ class World:
 
     def bubble_organism(self):
         size = len(self.__organisms)
-        for i in range(0, size):
+        for i in range(0, size - 1):
             if self.__organisms[size - i - 1].get_initiative() > self.__organisms[size - i - 2].get_initiative():
                 self.__organisms[size - i - 2], self.__organisms[size - i - 1] = self.__organisms[size - i - 1], \
                                                                                  self.__organisms[size - i - 2]
@@ -113,7 +125,7 @@ class World:
     def take_from_board(self, organism):
         cords = organism.get_cords()
         if self.__map[cords.x][cords.y] == organism:
-            self.__map[cords.x][cords.y] = None
+            self.__map[cords.x][cords.y] = 0
 
     def get_organism(self, cords):
         return self.__map[cords.x][cords.y]
@@ -126,7 +138,7 @@ class World:
                     self.__organisms.pop(i)
                     found = True
                     break
-            if not (found):
+            if not found:
                 for i in range(0, len(self.__created_list)):
                     if self.__created_list[i] == self.__destroy_list[-1]:
                         self.__created_list.pop(i)
@@ -157,7 +169,6 @@ class World:
         organism = self.alloc_by_type(type, cords)
         self.__map[cords.x][cords.y] = organism
         self.__organisms.append(organism)
-        # if(type == human)
         self.bubble_organism()
         return organism
 
@@ -170,7 +181,7 @@ class World:
         tmp = target.get_cords()
 
         if self.__map[tmp.x][tmp.y] == target:
-            self.__map[tmp.x][tmp.y] = None
+            self.__map[tmp.x][tmp.y] = 0
         for i in range(0, len(self.__organisms)):
             if self.__organisms[i] == target:
                 self.__destroy_list.append(target)
@@ -180,3 +191,40 @@ class World:
             if self.__created_list[i] == target:
                 self.__destroy_list.append(target)
                 return
+
+    def save(self):
+        try:
+            file = open("save.txt", "wt")
+
+            file.write(str(self._dimensions.x) + " " + str(self._dimensions.y) + "\n")
+            for organism in self.__organisms:
+                organism.save_me(file)
+
+            file.close()
+        except IOError:
+            print("Error: File does not appear to exist.")
+
+    def load(self):
+        try:
+            file = open("save.txt", "r")
+            self.__map = None
+            self.__organisms.clear()
+            self.__created_list.clear()
+            self.__destroy_list.clear()
+
+            a = [int(x) for x in file.readline().split()]
+            self._dimensions.x = a[0]
+            self._dimensions.y = a[1]
+            self.__map = [[0 for y in range(self._dimensions.y)] for x in range(self._dimensions.x)]
+            while True:
+                a.clear()
+                a = [x for x in file.readline().split()]
+                if len(a) < 2: break
+                cords = Point(int(a[1]), int(a[2]))
+                organism = self.create_organism_c(a[0], cords)
+                organism.set_strenght(int(a[3]))
+                if type(organism) == Human:
+                    organism.set_cooldown(int(a[4]))
+            file.close()
+        except IOError:
+            print("Error: File does not appear to exist.")

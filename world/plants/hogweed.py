@@ -10,7 +10,9 @@ class Hogweed(Plant):
 
 
     def be_eaten(self,organism):
-        self._world.remove_organism(organism)
+        from world.animals.cybersheep import Cybersheep
+        if not (isinstance(organism, Cybersheep)):
+            self._world.remove_organism(organism)
         self._world.remove_organism(self)
 
     def action(self):
@@ -33,18 +35,29 @@ class Hogweed(Plant):
             else:
                 tmp.y-=1
             self.kill(tmp)
+
+
             tmp.x+=1
             tmp.y+=2
+            self.kill(tmp)
+            tmp.y-=2
             self.kill(tmp)
             tmp.x-=1
             tmp.y+=2
             self.kill(tmp)
+
+
+
         super(Hogweed,self).action()
 
 
     def kill(self,tmp):
         organism = self._world.is_there(tmp)
         if organism:
-            if not(isinstance(organism,Plant)):
+            from world.animals.cybersheep import Cybersheep
+            if not(isinstance(organism,Plant)) and not(isinstance(organism,Cybersheep)):
                 self._world.remove_organism(organism)
-                #comment killing
+                self._world.get_commentator().comment_killing(self,organism)
+
+
+

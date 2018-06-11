@@ -1,3 +1,4 @@
+
 <CustomButton@Button>:
     font_size: 12
     color: .88, 0.88, 0.88, 1,
@@ -7,12 +8,91 @@
     group: 'board'
     size: 60,20
 
+<AnimalFactory>:
+    BoxLayout:
+        pos:250,280
+        size: 100,200
+        orientation: "vertical"
+        Button:
+            text: 'Wolf'
+            on_release:
+                root.dismiss()
+                root.create_organism("Wolf")
+                app.clear()
+        Button:
+            text: 'Sheep'
+            on_release:
+                root.dismiss()
+                root.create_organism("Sheep")
+                app.clear()
+        Button:
+
+            text: 'Antelope'
+            on_release:
+                root.dismiss()
+                root.create_organism("Antelope")
+                app.clear()
+        Button:
+            text: 'Fox'
+            on_release:
+                root.dismiss()
+                root.create_organism("Fox")
+                app.clear()
+        Button:
+            text: 'Turtle'
+            on_release:
+                root.dismiss()
+                root.create_organism("Turtle")
+                app.clear()
+        Button:
+            text: 'Dandelion'
+            on_release:
+                root.dismiss()
+                root.create_organism("Dandelion")
+                app.clear()
+        Button:
+            text: 'Deadlyshade'
+            on_release:
+                root.dismiss()
+                root.create_organism("Deadlyshade")
+                app.clear()
+        Button:
+            text: 'Grass'
+            on_release:
+                root.dismiss()
+                root.create_organism("Grass")
+                app.clear()
+        Button:
+            text: 'Hogweed'
+            on_release:
+                root.dismiss()
+                root.create_organism("Hogweed")
+                app.clear()
+        Button:
+            text: 'CyberSheep'
+            on_release:
+                root.dismiss()
+                root.create_organism("Cybersheep")
+                app.clear()
+        Button:
+            text: 'Cancel'
+            on_release: root.dismiss()
+
+<MyPopup@Popup>:
+    title:"Choose organism"
+    auto_dismiss: False
+    size_hint: None,None
+    size: 200,300
+
+
+
+
 <ScrollableLabel>:
     Label:
         size_hint_y: None
         height: self.texture_size[1]
         text_size: self.width, None
-        text: root.text
+        text: app.text
 
 
 <BoardInterface>:
@@ -21,19 +101,26 @@
         CustomButton:
             text: "Save"
             pos: 270, 145
+            on_press:
+                app.get_world().save()
         CustomButton:
             on_press:
                 app.perform_round()
                 root.clear()
             text: "Next turn"
             pos: 200, 145
+
         CustomButton:
             text: "Load"
             pos: 340, 145
+            on_press:
+                app.get_world().load()
+                app.text=""
         CustomButton:
             text: "Skill"
             pos: 270, 770
-
+            on_press:
+                app.get_world().activate_skill()
 
         ScrollableLabel:
             pos:0,10
@@ -45,6 +132,10 @@
             size: 60,20
             text: app.dir
 
+        Label:
+            pos:140,770
+            size: 60,20
+            text: app.info
 
 
 <Dialog>:

@@ -20,7 +20,7 @@ class Animal(Organism):
             dir = self._world.rand_dir()
             if self.will_be_in(dir):
                 break
-        # comment
+        self._world.get_commentator().comment_movement(self,dir)
         collision_target = self.move(dir)
         if collision_target:
             self.collision(collision_target, last_cords)
@@ -54,7 +54,7 @@ class Animal(Organism):
                 else:
                     self.fight(collision_target)
         else:
-            # TODO:commentator
+            self._world.get_commentator().comment_eating(collision_target,self)
             collision_target.be_eaten(self)
 
     def go_back(self, last_cords):
@@ -62,22 +62,24 @@ class Animal(Organism):
         self._cords.y = last_cords.y
 
     def fight(self, collision_target):
-        if collision_target.will_it_escape(): return
-        # todo:Comment
+        if collision_target.will_it_escape():return
+        self._world.get_commentator().comment_fight(self,collision_target)
         if self._strenght >= collision_target.get_strenght():
             self._world.remove_organism(collision_target)
-            # todo:Comment
+            self._world.get_commentator().comment_fight_result(self, True)
         else:
             self._world.remove_organism(self)
             if self._world.check_if_alive(collision_target):
                 self._world.set_on_board(collision_target)
-            # todo:Comment
+            self._world.get_commentator().comment_fight_result(self, False)
 
     def porliferation(self, partner):
         if self._world.create_in_neighbourhood(partner.get_cords(), type(self).__name__):
+            self._world.get_commentator().comment_porliferation(self, True)
             return
-            # todo:Cmment
         if self._world.create_in_neighbourhood(self._cords, type(self).__name__):
+            self._world.get_commentator().comment_porliferation(self, True)
             return
-            # todo:Cmment
-        # todo:comment
+
+        self._world.get_commentator().comment_porliferation(self, False)
+

@@ -17,7 +17,7 @@ class Fox(Animal):
         if dir==None:
             self._world.set_on_board(self)
             return
-        #todo:Comment
+        self._world.get_commentator().comment_movement(self, dir)
         collision_target = self.move(dir)
         if collision_target:
             self.collision(collision_target,last_cords)
